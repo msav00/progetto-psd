@@ -35,3 +35,5 @@ Report *newReport(IssueType category, char* name, char* description);
 void setReportState(Report *report, IssueState state);
 void setReportUrgency(Report *report, IssueUrgency priority);
 void deleteReport(Report *report);
+
+void printReport(Report *report);

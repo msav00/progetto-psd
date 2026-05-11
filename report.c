@@ -76,3 +76,7 @@ char *generateId(Report *report) {
     snprintf(full_id, ID_SIZE, "%s-%02d%02d%04d-%04d\0", string_denom, report->time->tm_mday, report->time->tm_mon+1, report->time->tm_year+1900, rand()%9999);
     return full_id;
 }
+
+void printReport(Report *report) {
+    printf("Report #%s:\n\tIssuer: %s\n\tDescription: %s\n\tDate: %s", report->id, report->issuer_name, report->desc, asctime(report->time));
+}
