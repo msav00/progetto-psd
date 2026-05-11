@@ -1,14 +1,20 @@
-main: main.o report.o
-	gcc -Wall -W main.o report.o -o main
+DEBUG_FLAGS := -g3
+COMPILE_FLAGS := -Wall
 
-debug: main.o report.o
-	gcc -Wall -W -g3 main.o report.o -o main
+SOURCES := menu.c report.c main.c
+OBJS := $(SOURCES:.c=.o)
 
-main.o: main.c
-	gcc -g3 -c main.c
+main: $(OBJS)
+	gcc $(COMPILE_FLAGS) $^ -o $@
 
-report.o: report.c
-	gcc -g3 -c report.c
+.PHONY: debug
+debug: COMPILE_FLAGS := $(DEBUG_FLAGS)
+debug: clean main
 
+#Build objects using pattern
+%.o: %.c
+	gcc -c $(COMPILE_FLAGS) $< -o $@
+
+.PHONY: clean
 clean:
-	rm main.o report.o
+	rm -f $(OBJS)
