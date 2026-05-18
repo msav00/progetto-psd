@@ -28,7 +28,7 @@ void printList(item *root) {
     int count = 0;
     curr_node = root;
     while (curr_node) {
-        printf("\t(%d): %s\n", (count++)+1, curr_node->value.id);
+        printf("\t(%d): %s\n", (count++)+1, curr_node->value->id);
         curr_node = curr_node->next;
     }
 }
@@ -138,7 +138,7 @@ void menuNewReport(hashtable h) {
     //Then create a report with the input data
     Report *rep = newReportEx((IssueType)cat, name, desc, date);
     printReport(rep); //remove after testing
-    insertHashtable(h, *rep);
+    insertHashtable(h, rep);
 
     //Clean up allocated strings
     free(name);

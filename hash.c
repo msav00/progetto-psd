@@ -25,17 +25,17 @@ hashtable newHashtable(int size) {
 /// @param h Hashtable to operate on.
 /// @param report Report to store.
 /// @return 0 if entry is already present in the hashtable, otherwise 1.
-int insertHashtable(hashtable h, Report report) {
+int insertHashtable(hashtable h, Report *report) {
     int idx;
     item *curr, *prev = NULL;
 
     //Find table index from the report's hash
-    idx = hashFunction(report.id, h->size);
+    idx = hashFunction(report->id, h->size);
     curr = h->table[idx];
 
     //Iterate that list to find equal entries.
     while (curr) {
-        if (strcmp(curr->value.id, report.id) == 0) return 0;
+        if (strcmp(curr->value->id, report->id) == 0) return 0;
         prev = curr;
         curr = curr->next;
     }
@@ -61,8 +61,8 @@ int getHashtableItem(hashtable h, char *key, Report *outReport) {
     elem = h->table[idx];
 
     //While the list node is valid.
-    while (elem->value.id) {
-        if (strcmp(elem->value.id, key) == 0) {
+    while (elem) { //can be changed to just elem here. (elem->value->id)
+        if (strcmp(elem->value->id, key) == 0) {
             outReport = &elem->value;
             return 1;
         }
@@ -84,13 +84,13 @@ Report *deleteHashtableItem(hashtable h, char *key) {
 
     //Loop the list until a report with the matching key is found.
     while (curr) {
-        if (!strcmp(curr->value.id, key)) {
+        if (!strcmp(curr->value->id, key)) {
             //Prepare a stand-alone pointer to the report
             Report *out = malloc(sizeof(Report));
             if (!out) return NULL;
-            *out = curr->value;
+            out = curr->value;
 
-            //
+            //Unlink list nodes if there are any
             if (!prev) h->table[idx] = curr->next;
             else prev->next = curr->next;
             free(curr);
@@ -128,7 +128,7 @@ void deleteHashtable(hashtable h) {
 /// @brief Allocates a new dictionary kv pair. Used by hashtable insert method.
 /// @param value The report to create the pair and to derive the key from.
 /// @return Pointer to the created key-value pair.
-item *newItem(Report value) {
+item *newItem(Report *value) {
     item *temp = calloc(1, sizeof(item));
     if (!temp) return NULL;
     temp->value = value;
@@ -161,7 +161,7 @@ item *searchHashtableByCategory(hashtable h, IssueType category, int *length) {
         item *curr_table = h->table[i];
         while (curr_table)
         {
-            if (curr_table->value.category == category) {
+            if (curr_table->value->category == category) {
                 item *node = calloc(1, sizeof(item));
                 node->value = curr_table->value;
                 if (!results) results = tail = node;
@@ -191,7 +191,7 @@ item *searchHashtableByState(hashtable h, IssueState state, int *length) {
         item *curr_table = h->table[i];
         while (curr_table)
         {
-            if (curr_table->value.state == state) {
+            if (curr_table->value->state == state) {
                 item *node = calloc(1, sizeof(item));
                 node->value = curr_table->value;
                 if (!results) results = tail = node;
@@ -222,7 +222,7 @@ item *searchHashtableByPriority(hashtable h, IssueUrgency priority, int *length)
         item *curr_table = h->table[i];
         while (curr_table)
         {
-            if (curr_table->value.priority == priority) {
+            if (curr_table->value->priority == priority) {
                 item *node = calloc(1, sizeof(item));
                 node->value = curr_table->value;
                 if (!results) results = tail = node;

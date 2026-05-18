@@ -15,8 +15,6 @@ char* entries[MAX_MENU_ENTRIES] = {
 };
 
 #pragma region Remove when done testing
-//void placeholder(hashtable h) { printf("Not yet implemented\n"); }
-
 void testhash(hashtable h) {
     printf("Insert key to hash for: ");
     char *key = malloc(sizeof(char));
