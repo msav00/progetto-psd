@@ -10,18 +10,16 @@
 char *generateId(Report *report);
 
 //Creates a new report and returns a pointer to it
-Report *newReport(IssueType category, char* name, char* description) {
+Report *newReport(IssueType category, char* name, char* description, struct tm* date) {
     Report *report = malloc(sizeof(Report));
     report->category = category;
-    //Get time
-    time_t cur_time = time(NULL);
-    report->time = gmtime(&cur_time);
+    report->time = date;
     //Allocate string fields and populate
     report->issuer_name = malloc(strlen(name));
     strcpy(report->issuer_name, name);
     report->desc = malloc(strlen(description));
     strcpy(report->desc, description);
-    //Set Issue-related information
+    //Set Issue-related information to their default values
     setReportState(report, Open);
     setReportUrgency(report, Normal);
     //Generate the ID from date and category
@@ -69,7 +67,7 @@ char *generateId(Report *report) {
             string_denom = "UNKN";
             break;
     }
-    //ID consists of a 4 character denominator + 2 dashes + 8 chars of date/time + 4 random digits and the terminator
+    //ID consists of a 4 character category denominator + 2 dashes + 8 chars of date/time + 4 random digits and the terminator
     //Template: IDID-DDMMYYYY-RAND
     //Example:  SRVC-07052026-8732
     char* full_id = malloc(sizeof(char)*ID_SIZE);
@@ -78,5 +76,31 @@ char *generateId(Report *report) {
 }
 
 void printReport(Report *report) {
-    printf("Report #%s:\n\tIssuer: %s\n\tDescription: %s\n\tDate: %s", report->id, report->issuer_name, report->desc, asctime(report->time));
+    char date_buf[18];
+    strftime(date_buf, sizeof(date_buf), "%B %d %Y %H:%M", report->time);
+    //todo: add status and urgency.
+    char *str_state = "Unknown";
+    switch (report->state) {
+        case Open: str_state = "Open";
+        break;
+        case Ongoing: str_state = "Ongoing";
+        break;
+        case Closed: str_state = "Closed";
+        break;
+    }
+    char *str_urgency = "Unknown";
+    switch (report->priority)
+    {
+        case Low: str_urgency = "Low";
+        break;
+        case BelowNormal: str_urgency = "Below Normal";
+        break;
+        case Normal: str_urgency = "Normal";
+        break;
+        case AboveNormal: str_urgency = "Above Normal";
+        break;
+        case High: str_urgency = "High";
+        break;
+    }
+    printf("Report #%s:\n\tIssuer: %s\n\tDescription: %s\n\tDate: %s\n\tStatus: %s\n\tPriority: %s\n", report->id, report->issuer_name, report->desc, date_buf, str_state, str_urgency);
 }
