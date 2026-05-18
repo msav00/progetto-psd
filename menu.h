@@ -1,4 +1,6 @@
+#include "hash.h"
 
-typedef void (*menu_callback)(char*);
+//Callback signature for menu entries
+typedef void (*menu_callback)(hashtable);
 
-void doMenu();
+void doMenu(hashtable h);

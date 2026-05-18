@@ -2,29 +2,39 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#include "menu_impl.h"
+
 //Number of menu entries besides the exit option
-#define MAX_MENU_ENTRIES 5
+#define MAX_MENU_ENTRIES 4
 
 char* entries[MAX_MENU_ENTRIES] = {
   "Issue new report",
-  "Update report",
-  "List reports",
+  "List all reports",
   "Search report",
   "Generate overview"
 };
 
-//todo: remove placeholder and set callbacks when implemented
-void placeholder(char *str) { printf("%s\n", str); }
+#pragma region Remove when done testing
+//void placeholder(hashtable h) { printf("Not yet implemented\n"); }
+
+void testhash(hashtable h) {
+    printf("Insert key to hash for: ");
+    char *key = malloc(sizeof(char));
+    string_input(key);
+    printf("Hash returns index %d (assuming size 20).\n", hashFunction(key, 20));
+    free(key);
+}
+#pragma endregion
 
 menu_callback callbacks[MAX_MENU_ENTRIES] = {
-    placeholder,
-    placeholder,
-    placeholder,
-    placeholder,
-    placeholder
+    menuNewReport,
+    menuListReports,
+    menuFilterReports,
+    testhash
 };
 
-void doMenu() {
+/// @brief Executes looping menu logic with the specified entries and their associated callbacks in the implementation.
+void doMenu(hashtable h) {
     int opt;
     do {
         printf("Available options:\n");
@@ -34,26 +44,14 @@ void doMenu() {
 
         printf("\t(0): Exit\nSelect an option (0-%d): ", MAX_MENU_ENTRIES);   
         scanf("%d", &opt);
+        getchar(); //consume newline for upcoming string input functions.
         system("clear");
 
         if (opt >= 0 && opt <= MAX_MENU_ENTRIES) {
             if (opt == 0) break;
-            callbacks[opt-1]("Callback Test");
+            callbacks[opt-1](h);
 
         } else printf("Invalid option %d\n", opt);
-
-        /* //Old implementation w/o callbacks
-        switch (opt)
-        {
-            case 0: break;
-            case 1:
-                break;
-            
-            default:
-                printf("Invalid option %d\n", opt);
-                break;
-        }
-        */
 
     } while (opt != 0);
 }
