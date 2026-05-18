@@ -28,7 +28,7 @@ void printList(item *root) {
     int count = 0;
     curr_node = root;
     while (curr_node) {
-        printf("\t(%d): %s\n", (count++)+1, curr_node->value.id);
+        printf("\t(%d): %s\n", (count++)+1, curr_node->value->id);
         curr_node = curr_node->next;
     }
 }
@@ -136,9 +136,9 @@ void menuNewReport(hashtable h) {
     cat -= 1;
 
     //Then create a report with the input data
-    Report *rep = newReportEx((IssueType)cat, name, desc, date);
+    Report *rep = newReport((IssueType)cat, name, desc, date);
     printReport(rep); //remove after testing
-    insertHashtable(h, *rep);
+    insertHashtable(h, rep);
 
     //Clean up allocated strings
     free(name);
@@ -158,7 +158,7 @@ void menuListReports(hashtable h) {
         system("clear");
 
         if (opt > 0 && opt <= count ) {
-            submenuReportDetails(h, &getItem(rep_list, opt)->value);
+            submenuReportDetails(h, getItem(rep_list, opt)->value);
         }
 
         freeList(rep_list);
@@ -227,7 +227,7 @@ void menuFilterReports(hashtable h) {
         system("clear");
 
         if (opt > 0 && opt <= count ) {
-            submenuReportDetails(h, &getItem(rep_list, opt)->value);
+            submenuReportDetails(h, getItem(rep_list, opt)->value);
         }
 
 

@@ -2,7 +2,7 @@
 #pragma once
 
 struct node {
-    Report value;
+    Report *value;
     struct node *next;
 };
 
@@ -18,7 +18,7 @@ typedef struct hash *hashtable;
 //Generic hashtable methods
 
 hashtable newHashtable(int size);
-int insertHashtable(hashtable h, Report report);
+int insertHashtable(hashtable h, Report *report);
 int getHashtableItem(hashtable h, char *key, Report *outReport);
 Report *deleteHashtableItem(hashtable h, char *key);
 void deleteHashtable(hashtable h);
@@ -33,4 +33,4 @@ item *getHashtableAsList(hashtable h, int *length);
 //Utilities
 
 unsigned int hashFunction(char *key, int size);
-item *newItem(Report value);
+item *newItem(Report *value);
