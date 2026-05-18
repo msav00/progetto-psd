@@ -136,7 +136,7 @@ void menuNewReport(hashtable h) {
     cat -= 1;
 
     //Then create a report with the input data
-    Report *rep = newReportEx((IssueType)cat, name, desc, date);
+    Report *rep = newReport((IssueType)cat, name, desc, date);
     printReport(rep); //remove after testing
     insertHashtable(h, rep);
 
@@ -158,7 +158,7 @@ void menuListReports(hashtable h) {
         system("clear");
 
         if (opt > 0 && opt <= count ) {
-            submenuReportDetails(h, &getItem(rep_list, opt)->value);
+            submenuReportDetails(h, getItem(rep_list, opt)->value);
         }
 
         freeList(rep_list);
@@ -227,7 +227,7 @@ void menuFilterReports(hashtable h) {
         system("clear");
 
         if (opt > 0 && opt <= count ) {
-            submenuReportDetails(h, &getItem(rep_list, opt)->value);
+            submenuReportDetails(h, getItem(rep_list, opt)->value);
         }
 
 

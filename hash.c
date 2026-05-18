@@ -63,7 +63,7 @@ int getHashtableItem(hashtable h, char *key, Report *outReport) {
     //While the list node is valid.
     while (elem) { //can be changed to just elem here. (elem->value->id)
         if (strcmp(elem->value->id, key) == 0) {
-            outReport = &elem->value;
+            outReport = elem->value;
             return 1;
         }
         //elem->next = malloc(sizeof(item));
