@@ -168,8 +168,9 @@ void menuListReports(hashtable h) {
 void menuFilterReports(hashtable h) {
     //Choose the source of reports once and keep showing the same list.
     int source = 0;
-    printf("Available filters:\n\t(1): Category\n\t(2): Priority\n\t(3): Status\nSelect an option (1-3 or 0 to go back): ");
+    printf("Available filters:\n\t(1): Category\n\t(2): Priority\n\t(3): Status\n\t(4): By Identifier\nSelect an option (1-3 or 0 to go back): ");
     scanf("%d", &source);
+    getchar();
     
     //first switch to specify details of the selected filter
     int filter = 0;
@@ -202,6 +203,20 @@ void menuFilterReports(hashtable h) {
             }
             filter -= 1;
             break;
+        case 4:
+            printf("Insert exact report ID (or 0 to go back): ");
+            char *id = malloc(sizeof(char) * REPORT_ID_SIZE);
+            string_input(id);
+            Report *rep;
+            if (getHashtableItem(h, id, &rep))
+                submenuReportDetails(h, rep);
+            else printf("Report not found.\n");
+            free(id);
+            return;
+            break;
+        default:
+            printf("Invalid option %d, aborting...\n", source);
+            return;
     }
 
     int count = 0;
@@ -213,11 +228,11 @@ void menuFilterReports(hashtable h) {
         switch (source)
         {
             case 1: rep_list = searchHashtableByCategory(h, (IssueType)filter, &count);
-            break;
+                break;
             case 2: rep_list = searchHashtableByPriority(h, (IssueUrgency)filter, &count);
-            break;
+                break;
             case 3: rep_list = searchHashtableByState(h, (IssueState)filter, &count);
-            break;
+                break;
         }
 
         printf("Search results:\n");

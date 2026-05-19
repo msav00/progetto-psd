@@ -19,7 +19,7 @@ typedef struct hash *hashtable;
 
 hashtable newHashtable(int size);
 int insertHashtable(hashtable h, Report *report);
-int getHashtableItem(hashtable h, char *key, Report *outReport);
+int getHashtableItem(hashtable h, char *key, Report **outReport);
 Report *deleteHashtableItem(hashtable h, char *key);
 void deleteHashtable(hashtable h);
 

@@ -53,7 +53,7 @@ int insertHashtable(hashtable h, Report *report) {
 /// @param key Identifier to the stored value.
 /// @param outReport Pointer to the report if contained in the dictionary. Can be NULL if not found.
 /// @return 0 if the report was not found, otherwise 1.
-int getHashtableItem(hashtable h, char *key, Report *outReport) {
+int getHashtableItem(hashtable h, char *key, Report **outReport) {
     int idx;
     item *elem;
 
@@ -62,8 +62,8 @@ int getHashtableItem(hashtable h, char *key, Report *outReport) {
 
     //While the list node is valid.
     while (elem) { //can be changed to just elem here. (elem->value->id)
-        if (strcmp(elem->value->id, key) == 0) {
-            outReport = elem->value;
+        if (strncmp(elem->value->id, key, REPORT_ID_SIZE-1) == 0) {
+            *outReport = elem->value;
             return 1;
         }
         //elem->next = malloc(sizeof(item));

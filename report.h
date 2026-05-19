@@ -1,6 +1,9 @@
 #include <time.h>
 #pragma once
 
+//Length of the report identifier
+#define REPORT_ID_SIZE 19
+
 typedef enum type {
     Road,
     Illumination,

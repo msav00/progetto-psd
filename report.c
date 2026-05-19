@@ -4,9 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//Length of the report identifier
-#define ID_SIZE 19
-
 char *generateId(Report *report);
 
 //Creates a new report and returns a pointer to it
@@ -23,7 +20,7 @@ Report *newReport(IssueType category, char* name, char* description, struct tm* 
     setReportState(report, Open);
     setReportUrgency(report, Normal);
     //Generate the ID from date and category
-    report->id = malloc(ID_SIZE);
+    report->id = malloc(REPORT_ID_SIZE);
     report->id = generateId(report);
     return report;
 }
@@ -70,8 +67,8 @@ char *generateId(Report *report) {
     //ID consists of a 4 character category denominator + 2 dashes + 8 chars of date/time + 4 random digits and the terminator
     //Template: IDID-DDMMYYYY-RAND
     //Example:  SRVC-07052026-8732
-    char* full_id = malloc(sizeof(char)*ID_SIZE);
-    snprintf(full_id, ID_SIZE, "%s-%02d%02d%04d-%04d\0", string_denom, report->time->tm_mday, report->time->tm_mon+1, report->time->tm_year+1900, rand()%9999);
+    char* full_id = malloc(sizeof(char)*REPORT_ID_SIZE);
+    snprintf(full_id, REPORT_ID_SIZE, "%s-%02d%02d%04d-%04d\0", string_denom, report->time->tm_mday, report->time->tm_mon+1, report->time->tm_year+1900, rand()%9999);
     return full_id;
 }
 
