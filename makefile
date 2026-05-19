@@ -1,10 +1,14 @@
 CC := gcc
 
+SRC_DIR := src
+OBJ_DIR := objs
+INC_DIR := include
+
 DEBUG_FLAGS := -g3
-COMPILE_FLAGS := -Wall -I include
+COMPILE_FLAGS := -Wall -I $(INC_DIR)
 
 SOURCES := $(wildcard src/*.c)
-OBJS := $(patsubst ./src/%.c,./objs/%.o,$(SOURCES)) #$(SOURCES:.c=.o)
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES)) #$(SOURCES:.c=.o)
 
 main: $(OBJS)
 	$(CC) $(COMPILE_FLAGS) $^ -o $@
@@ -14,12 +18,12 @@ debug: COMPILE_FLAGS += $(DEBUG_FLAGS)
 debug: clean main
 
 #Build objects using pattern
-objs/%.o: %.c | ./objs
+objs/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) -c $(COMPILE_FLAGS) $< -o $@
 
 ./objs:
-	mkdir -p ./objs
+	mkdir -p $(OBJ_DIR)
 
 .PHONY: clean
 clean:
-	rm -f ./objs/*.o
+	rm -f $(OBJ_DIR)/*.o
