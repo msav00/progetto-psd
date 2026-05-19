@@ -231,6 +231,52 @@ void menuFilterReports(hashtable h) {
         }
 
 
-        if (rep_list) freeList(rep_list);
+        freeList(rep_list);
     } while (opt != 0);
+}
+
+void menuOverview(hashtable h) {
+    //loop through all reports, count all categories, states and most frequent reports per category.
+    int num_reports = 0;
+    int categories[4];
+    int states[3];
+    int max = 0, max_index;
+    item *rep_list = getHashtableAsList(h, &num_reports), *curr = rep_list;
+
+    //collect overview data from each report
+    while (curr)
+    {
+        categories[curr->value->category]++;
+        states[curr->value->state]++;
+
+        curr = curr->next;
+    }
+
+    //find maximum and save it's index
+    for (int i = 0; i < 4; i++) {
+        if (categories[i] > max) {
+            max = categories[i];
+            max_index = i;
+        }
+    }
+    
+    printf("Overview:\n\tTotal Reports: %d\n\tNumber of reports per category:", num_reports);
+    printf("\n\t\t-Road related: %d\n\t\t-Street Illumination: %d\n\t\t-Garbage Disposal: %d\n\t\t-Public Services: %d\n\tNumber of reports per status:", categories[0], categories[1], categories[2], categories[3]);
+    printf("\n\t\t-Open: %d\n\t\t-Ongoing: %d\n\t\t-Closed: %d\n\tMost problematic category: ", states[0], states[1], states[2]);
+
+    char *m_type;
+    switch (max_index)
+    {
+        case 0: m_type = "Road Maintenance";
+        break;
+        case 1: m_type = "Illumination";
+        break;
+        case 2: m_type = "Garbage Disposal";
+        break;
+        case 3: m_type = "Public Services";
+        break;
+    }
+    printf("%s\n", m_type);
+
+    freeList(rep_list);
 }

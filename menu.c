@@ -14,21 +14,11 @@ char* entries[MAX_MENU_ENTRIES] = {
   "Generate overview"
 };
 
-#pragma region Remove when done testing
-void testhash(hashtable h) {
-    printf("Insert key to hash for: ");
-    char *key = malloc(sizeof(char));
-    string_input(key);
-    printf("Hash returns index %d (assuming size 20).\n", hashFunction(key, 20));
-    free(key);
-}
-#pragma endregion
-
 menu_callback callbacks[MAX_MENU_ENTRIES] = {
     menuNewReport,
     menuListReports,
     menuFilterReports,
-    testhash
+    menuOverview
 };
 
 /// @brief Executes looping menu logic with the specified entries and their associated callbacks in the implementation.
