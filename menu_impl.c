@@ -118,7 +118,7 @@ void menuNewReport(hashtable h) {
     printf("Insert date and time (HH:MM DD/MM/YYYY): ");
     scanf("%d:%d %d/%d/%d", &date->tm_hour, &date->tm_min, &date->tm_mday, &date->tm_mon, &date->tm_year);
     
-    //Apply time offsets (months are stored 0-11 and year as offset from year 1900)
+    //Apply time offsets (months are stored 0-11, year as offset from year 1900 and days 0-6)
     date->tm_mon -= 1;
     date->tm_year -= 1900;
     date->tm_wday -=1;
@@ -137,7 +137,8 @@ void menuNewReport(hashtable h) {
 
     //Then create a report with the input data
     Report *rep = newReport((IssueType)cat, name, desc, date);
-    printReport(rep); //remove after testing
+    system("clear");
+    printReport(rep);
     insertHashtable(h, rep);
 
     //Clean up allocated strings
@@ -172,7 +173,7 @@ void menuFilterReports(hashtable h) {
     scanf("%d", &source);
     getchar();
     
-    //first switch to specify details of the selected filter
+    //first switch to specify details for the selected filter
     int filter = 0;
     switch (source)
     {
@@ -194,7 +195,7 @@ void menuFilterReports(hashtable h) {
             }
             filter -= 3;
             break;
-        case 3: //and status
+        case 3: //status
             printf("Choose status:\n\t(1): Open\n\t(2): Ongoing\n\t(3): Closed\n[1-3]> ");
             scanf("%d", &filter);
             if (filter < 1 || filter > 3) {
@@ -203,7 +204,7 @@ void menuFilterReports(hashtable h) {
             }
             filter -= 1;
             break;
-        case 4:
+        case 4: //and single search by id.
             printf("Insert exact report ID (or 0 to go back): ");
             char *id = malloc(sizeof(char) * REPORT_ID_SIZE);
             string_input(id);
@@ -244,7 +245,6 @@ void menuFilterReports(hashtable h) {
         if (opt > 0 && opt <= count ) {
             submenuReportDetails(h, getItem(rep_list, opt)->value);
         }
-
 
         freeList(rep_list);
     } while (opt != 0);

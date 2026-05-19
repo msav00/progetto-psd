@@ -6,7 +6,12 @@
 
 char *generateId(Report *report);
 
-//Creates a new report and returns a pointer to it
+/// @brief Generates a new report with the given details (Status and Urgency are set to default values).
+/// @param category Type of category for the report.
+/// @param name String containing the report issuer's name.
+/// @param description String containing a description for the report.
+/// @param date Date/time structure for the issued report.
+/// @return Pointer to the newly created report.
 Report *newReport(IssueType category, char* name, char* description, struct tm* date) {
     Report *report = malloc(sizeof(Report));
     report->category = category;
@@ -33,7 +38,8 @@ void setReportUrgency(Report *report, IssueUrgency priority) {
     report->priority = priority;
 }
 
-//Frees report from memory
+/// @brief Frees the given report from memory.
+/// @param report Pointer to the report to delete.
 void deleteReport(Report *report) {
     //Free all strings
     free(report->id);
@@ -43,7 +49,9 @@ void deleteReport(Report *report) {
     free(report);
 }
 
-//Generate an Id from the given report data and a random number
+/// @brief Generate a string identifier for the given report.
+/// @param report Pointer to the report to generate an identifier for.
+/// @return Pointer to the string containing the identifier.
 char *generateId(Report *report) {
     char* string_denom;
     switch (report->category)
@@ -72,10 +80,11 @@ char *generateId(Report *report) {
     return full_id;
 }
 
+/// @brief Prints the given report to terminal in a pretty format.
+/// @param report Pointer to the report to display.
 void printReport(Report *report) {
     char date_buf[18];
     strftime(date_buf, sizeof(date_buf), "%B %d %Y %H:%M", report->time);
-    //todo: add status and urgency.
     char *str_state = "Unknown";
     switch (report->state) {
         case Open: str_state = "Open";
