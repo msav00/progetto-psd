@@ -204,6 +204,7 @@ void menuFilterReports(hashtable h) {
             free(id);
             return;
             break;
+        case 0: return;
         default:
             printf("Invalid option %d, aborting...\n", source);
             return;
