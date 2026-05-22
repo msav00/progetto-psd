@@ -20,6 +20,9 @@ static void replaceNewLine(char *s) {
     if (s && s[n-1] == 'n') s[n-1] = 0;
 }
 
+/// @brief Reads an overview from a file.
+/// @param filename Filename string.
+/// @return Pointer to the overview created from the file data.
 Overview *getOverviewFromFile(char *filename) {
     FILE *over_file = fopen(filename, "r");
     if (!over_file) {
@@ -97,6 +100,7 @@ item *getReportsFromFile(char *filename) {
 
 #pragma endregion
 
+/// @brief Tests initialization of a hashtable.
 void testInit() {
     hashtable h = newHashtable(HASH_SIZE);
     assert(h);
@@ -104,6 +108,7 @@ void testInit() {
     deleteHashtable(h);
 }
 
+/// @brief Tests correct insertion of a series of reports into a hashtable.
 void testInsert() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -113,10 +118,12 @@ void testInsert() {
         assert(insertHashtable(h, curr->value));
         curr = curr->next;
     }
+
     freeList(reports);
     deleteHashtable(h);
 }
 
+/// @brief Tests searching for an existing and a non-existing report within the hashtable.
 void testSearch() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -127,9 +134,13 @@ void testSearch() {
         curr = curr->next;
     }
 
+    //Create a new report that doesn't exist in the hashtable;
     time_t curtime = time(NULL);
-    Report* existing = NULL;
     Report* nonexisting = newReport(PublicServices, "Nessuno", "Non presente nell'hashtable", gmtime(&curtime));
+    
+    Report* existing = NULL;
+
+    //Check if a non-existing report is found or if an existing one hasn't.
     assert(getHashtableItem(h, reports->value->id, &existing));
     assert(getHashtableItem(h, nonexisting->id, &existing) == 0);
 
@@ -138,6 +149,7 @@ void testSearch() {
     deleteHashtable(h);
 }
 
+/// @brief Test a filtered search based on category
 void testFilter() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -161,6 +173,7 @@ void testFilter() {
     deleteHashtable(h);
 }
 
+/// @brief Test changing status of a stored report.
 void testState() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -171,11 +184,15 @@ void testState() {
         curr = curr->next;
     }
 
+    //Fetch report
     Report *test_rep = NULL;
     getHashtableItem(h, reports->value->id, &test_rep);
+    
+    //Save old status and set a new one
     IssueState oldstate = test_rep->state, newstate = Closed;
     setReportState(test_rep, newstate);
 
+    //Fetch the same report again and check if status has changed
     getHashtableItem(h, reports->value->id, &test_rep);
     assert(test_rep->state != oldstate && test_rep->state == newstate);
     
@@ -183,6 +200,7 @@ void testState() {
     deleteHashtable(h);
 }
 
+/// @brief Test changing priority of a stored report
 void testPriority() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -193,11 +211,15 @@ void testPriority() {
         curr = curr->next;
     }
 
+    //Fetch report
     Report *test_rep = NULL;
     getHashtableItem(h, reports->value->id, &test_rep);
+    
+    //Save old priority and set a new one
     IssueUrgency oldpriority = test_rep->priority, newpriority = High;
     setReportUrgency(test_rep, newpriority);
 
+    //Fetch the same report again and check if priority has changed
     getHashtableItem(h, reports->value->id, &test_rep);
     assert(test_rep->priority != oldpriority && test_rep->priority == newpriority);
     
@@ -205,6 +227,7 @@ void testPriority() {
     deleteHashtable(h);
 }
 
+/// @brief Test generating an overview
 void testOverview() {
     hashtable h = newHashtable(HASH_SIZE);
 
@@ -215,9 +238,11 @@ void testOverview() {
         curr = curr->next;
     }
 
+    //Load expected overview output from the input reports
     Overview *pregenerated = getOverviewFromFile("tests/overview.txt");
     Overview *generated = generateOverviewFromHashtable(h);
 
+    //Check if all parameters of the two overviews match
     assert(pregenerated->total_reports == generated->total_reports);
     for (int i = 0; i < 4; i++)
         assert(pregenerated->categories[i] == generated->categories[i]);
