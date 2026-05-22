@@ -48,17 +48,6 @@ item *getItem(item *root, int index) {
     return NULL;
 }
 
-/// @brief Frees the given list from memory, starting from the root. Used in most menu functions after exiting search/listing funtions.
-/// @param root Pointer to the list to delete.
-void freeList(item *root) {
-    item *cur = root;
-    while (cur) {
-        item* next = cur->next;
-        free(cur);
-        cur = next;
-    }
-}
-
 /// @brief Presents options for the given report. Used in menu functions to modify selected reports.
 /// @param report Pointer to the report to modify/view.
 void submenuReportDetails(hashtable h, Report *report) {
@@ -251,47 +240,25 @@ void menuFilterReports(hashtable h) {
 }
 
 void menuOverview(hashtable h) {
-    //loop through all reports, count all categories, states and most frequent reports per category.
-    int num_reports = 0;
-    int categories[4];
-    int states[3];
-    int max = 0, max_index;
-    item *rep_list = getHashtableAsList(h, &num_reports), *curr = rep_list;
+    Overview *over = generateOverviewFromHashtable(h);
 
-    //collect overview data from each report
-    while (curr)
-    {
-        categories[curr->value->category]++;
-        states[curr->value->state]++;
-
-        curr = curr->next;
-    }
-
-    //find maximum and save it's index
-    for (int i = 0; i < 4; i++) {
-        if (categories[i] > max) {
-            max = categories[i];
-            max_index = i;
-        }
-    }
-    
-    printf("Overview:\n\tTotal Reports: %d\n\tNumber of reports per category:", num_reports);
-    printf("\n\t\t-Road related: %d\n\t\t-Street Illumination: %d\n\t\t-Garbage Disposal: %d\n\t\t-Public Services: %d\n\tNumber of reports per status:", categories[0], categories[1], categories[2], categories[3]);
-    printf("\n\t\t-Open: %d\n\t\t-Ongoing: %d\n\t\t-Closed: %d\n\tMost problematic category: ", states[0], states[1], states[2]);
+    printf("Overview:\n\tTotal Reports: %d\n\tNumber of reports per category:", over->total_reports);
+    printf("\n\t\t-Road related: %d\n\t\t-Street Illumination: %d\n\t\t-Garbage Disposal: %d\n\t\t-Public Services: %d\n\tNumber of reports per status:", over->categories[0], over->categories[1], over->categories[2], over->categories[3]);
+    printf("\n\t\t-Open: %d\n\t\t-Ongoing: %d\n\t\t-Closed: %d\n\tMost problematic category: ", over->states[0], over->states[1], over->states[2]);
 
     char *m_type;
-    switch (max_index)
+    switch (over->most_frequent)
     {
-        case 0: m_type = "Road Maintenance";
+        case Road: m_type = "Road Maintenance";
         break;
-        case 1: m_type = "Illumination";
+        case Illumination: m_type = "Illumination";
         break;
-        case 2: m_type = "Garbage Disposal";
+        case GarbageDisposal: m_type = "Garbage Disposal";
         break;
-        case 3: m_type = "Public Services";
+        case PublicServices: m_type = "Public Services";
         break;
     }
     printf("%s\n", m_type);
 
-    freeList(rep_list);
+    deleteOverview(over);
 }

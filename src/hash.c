@@ -135,6 +135,17 @@ item *newItem(Report *value) {
     return temp;
 }
 
+/// @brief Frees the given list from memory, starting from the root. Used in most menu functions after exiting search/listing funtions.
+/// @param root Pointer to the list to delete.
+void freeList(item *root) {
+    item *cur = root;
+    while (cur) {
+        item* next = cur->next;
+        free(cur);
+        cur = next;
+    }
+}
+
 /// @brief Hashes the given key using the Fowler-Noll-Vo hashing function (FNV-1a, 32 bits). The resulting hash is divided by size, returning the remainder to identify the list index for the hashtable.
 /// @param key String identifier for the value
 /// @param size Maximum index size
@@ -265,4 +276,31 @@ item *getHashtableAsList(hashtable h, int *length)
     }
     if (length) *length = count;
     return results;
+}
+
+Overview *generateOverviewFromHashtable(hashtable h) {
+    Overview *overview = newOverview();
+
+    int max = 0;
+    item *rep_list = getHashtableAsList(h, &overview->total_reports), *curr = rep_list;
+
+    //collect overview data from each report
+    while (curr)
+    {
+        overview->categories[curr->value->category]++;
+        overview->states[curr->value->state]++;
+
+        curr = curr->next;
+    }
+
+    //find maximum and save it's index
+    for (int i = 0; i < 4; i++) {
+        if (overview->categories[i] > max) {
+            max = overview->categories[i];
+            overview->most_frequent = (IssueType)i;
+        }
+    }
+
+    freeList(rep_list);
+    return overview;
 }

@@ -1,4 +1,6 @@
 #include "report.h"
+#include "overview.h"
+
 #pragma once
 
 struct node {
@@ -30,7 +32,12 @@ item *searchHashtableByState(hashtable h, IssueState state, int *length);
 item *searchHashtableByPriority(hashtable h, IssueUrgency priority, int *length);
 item *getHashtableAsList(hashtable h, int *length);
 
+//Overview
+
+Overview *generateOverviewFromHashtable(hashtable h);
+
 //Utilities
 
 unsigned int hashFunction(char *key, int size);
+void freeList(item *root);
 item *newItem(Report *value);
