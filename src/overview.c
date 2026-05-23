@@ -7,5 +7,5 @@ Overview *newOverview() {
 }
 
 void deleteOverview(Overview *overview) {
-    free(overview);
+    if (overview) free(overview);
 }
