@@ -31,16 +31,17 @@ Report *newReport(IssueType category, char* name, char* description, struct tm* 
 }
 
 void setReportState(Report *report, IssueState state) {
-    report->state = state;
+    if (report) report->state = state;
 }
 
 void setReportUrgency(Report *report, IssueUrgency priority) {
-    report->priority = priority;
+    if (report) report->priority = priority;
 }
 
 /// @brief Frees the given report from memory.
 /// @param report Pointer to the report to delete.
 void deleteReport(Report *report) {
+    if (!report) return;
     //Free all strings
     free(report->id);
     free(report->issuer_name);
