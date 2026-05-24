@@ -47,6 +47,7 @@ Overview *getOverviewFromFile(char *filename) {
         over->most_frequent = (IssueType)most_freq_type;
     }
 
+    fclose(over_file);
     return over;
 }
 
