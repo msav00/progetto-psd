@@ -99,6 +99,21 @@ item *getReportsFromFile(char *filename) {
     return root;
 }
 
+/// @brief Creates a copy of the given report.
+/// @param rep Report to copy.
+/// @return Pointer to copied report.
+Report *copyReport(Report *rep) {
+    Report *out = malloc(sizeof(Report));
+    out->id = rep->id;
+    out->issuer_name = rep->issuer_name;
+    out->category = rep->category;
+    out->desc = rep->desc;
+    out->time = rep->time;
+    out->state = rep->state;
+    out->priority = rep->priority;
+    return out;
+}
+
 #pragma endregion
 
 /// @brief Tests initialization of a hashtable.
@@ -117,8 +132,32 @@ void testInsert() {
     reports = curr = getReportsFromFile("tests/reports.txt");
     while (curr) {
         assert(insertHashtable(h, curr->value));
+
+        Report *test = NULL;
+        getHashtableItem(h, curr->value->id, &test);
+        assert(test);
+
         curr = curr->next;
     }
+
+    freeList(reports);
+    deleteHashtable(h);
+}
+
+void testDeletion() {
+    hashtable h = newHashtable(HASH_SIZE);
+
+    item *reports = NULL, *curr = NULL;
+    reports = curr = getReportsFromFile("tests/reports.txt");
+    while (curr) {
+        insertHashtable(h, curr->value);
+        curr = curr->next;
+    }
+
+    //Create a copy of the first report
+    Report *deleted = deleteHashtableItem(h, reports->value->id);
+    assert(deleted);
+    assert(!getHashtableItem(h, deleted->id, NULL));
 
     freeList(reports);
     deleteHashtable(h);
@@ -260,6 +299,7 @@ void testOverview() {
 int main() {
     testInit();
     testInsert();
+    testDeletion();
     
     testSearch();
     testFilter();
